@@ -53,4 +53,4 @@ Options:
                           without performing the changes.
   --help                  Show this message and exit.
 ```
-![](bulkrename.gif)
+![example](bulkrename.gif)
