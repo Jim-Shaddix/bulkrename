@@ -53,4 +53,7 @@ Options:
                           without performing the changes.
   --help                  Show this message and exit.
 ```
+
+Below is a simple example of how the script works without any arguments.
+
 ![example](bulkrename.gif)
