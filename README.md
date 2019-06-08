@@ -1,7 +1,7 @@
 
 # Bulkrename 
-* this script provides with a command line tool 
-that can called through the command`bulkrename`.
+* This script provides a command line tool 
+that can called through the command `bulkrename`.
 * This tool allows you to refactor files, similar 
 to how the `bulkrename` command works in the file 
 manager [ranger](https://github.com/ranger/ranger).
@@ -16,7 +16,7 @@ that is passed in.
 ## Installation
 Download command
 ```
-git clone 
+git clone https://github.com/Jim-Shaddix/bulkrename.git
 ```
 Install command
 ```
