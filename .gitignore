@@ -110,4 +110,3 @@ generate_gif_test.py
 gif_test_files/
 .DS_Store
 .gitignore
-bulkrename.gif
