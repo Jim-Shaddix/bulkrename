@@ -106,3 +106,8 @@ venv.bak/
 #my files
 generate_test.py
 test_files
+generate_gif_test.py
+gif_test_files/
+.DS_Store
+.gitignore
+bulkrename.gif

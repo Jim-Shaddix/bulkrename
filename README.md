@@ -14,7 +14,7 @@ that is passed in.
 
 ## Requirements
 * python 3.6
-* python module: click.
+* python module: click
 * This script should run appropriately on MacOS/Linux/Windows systems, but
 the script has not been tested on Windows.
 
@@ -53,3 +53,4 @@ Options:
                           without performing the changes.
   --help                  Show this message and exit.
 ```
+![example usage](bulkrename.gif)
