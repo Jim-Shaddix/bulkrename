@@ -61,11 +61,11 @@ Options:
   the user is prompted with a message. The users response to the message dictates
   how the rest of the program will run.
   
- ``` [Retry|Continue|Exit]? [r|c|x]: ```
+ message: ``` [Retry|Continue|Exit]? [r|c|x]: ```
  
-1. **r**: Allow's the user to try modifying the files in the current directory again.
-2. **c**: Causes the program to skip refactoring the current directory.
-3. **x**: will stop execution of the program.
+* **r**: Allow's the user to try modifying the files in the current directory again.
+* **c**: Causes the program to skip refactoring the current directory.
+* **x**: will stop execution of the program.
 
 ## Example Usage
 * Below is a simple example of how the script works without any arguments.
