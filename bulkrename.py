@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from ValidPath import check_valid_paths
 """
-    This is a program for refactoring filenames useing a text editor (i.e vim)
+    This is a program for refactoring filenames using a text editor (such as vim)
     - for a description on how to use this program, you can look in the docs in
       the cli function, or run this program with the --help flag
 """
@@ -11,8 +11,11 @@ from ValidPath import check_valid_paths
 
 def check_provided_path_valid(dir_path):
     """
-        checks whether or not the program was run with an
+        checks whether the program was run with an
         appropriate path argument.
+
+        :param dir_path: [Path] to check
+        :return None
     """
     try:
 
@@ -22,63 +25,86 @@ def check_provided_path_valid(dir_path):
 
         # CHECK: Is directory
         if not dir_path.is_dir():
-            raise Exception("This path specified was not a directory.")
+            raise Exception("The path specified was not a directory.")
 
     except Exception as e:
         print(e)
         sys.exit(1)
 
 
-def get_refactor_checker(file_flag, dot_file_flag, dir_flag, dot_dir_flag):
+def refactor_checker(file_path, file_flag, dot_file_flag, dir_flag, dot_dir_flag):
     """
-    :param file_flag:     [boolean] determines whether or not to refactor files
-    :param dot_file_flag: [boolean] determines whether or not to refactor dot files
-    :param dir_flag:      [boolean] determines whether or not to refactor directories
-    :param dot_dir_flag:  [boolean] determines whether or not to refactor dot directories
+    :param file_path:     [Path] file to be checked.
+    :param file_flag:     [bool] whether to refactor files
+    :param dot_file_flag: [bool] whether to refactor dot files
+    :param dir_flag:      [bool] whether to refactor directories
+    :param dot_dir_flag:  [bool] whether to refactor dot directories
 
-    :return: a function that takes a path as an argument, and that returns a boolean that
-             indicates whether or not the path should be refactored
+    :return: [bool] indicates whether file_path should be refactored
     """
-    checks = []
-    if file_flag:     checks.append(lambda x: x.is_file() and str(x.name)[0] != ".")
-    if dot_file_flag: checks.append(lambda x: x.is_file() and str(x.name)[0] == ".")
-    if dir_flag:      checks.append(lambda x: x.is_dir()  and str(x.name)[0] != ".")
-    if dot_dir_flag:  checks.append(lambda x: x.is_dir()  and str(x.name)[0] == ".")
-    return lambda file_path: any([f(file_path) for f in checks])
+
+    # alias
+    p = file_path
+
+    # if a flag is set, and file_path is associated with
+    # the flag, the file_path is scheduled to be refactored.
+    if file_flag    and p.is_file() and str(p.name)[0] != ".": return True
+    if dot_file_flag and p.is_file() and str(p.name)[0] == ".": return True
+    if dir_flag     and p.is_dir()  and str(p.name)[0] != ".": return True
+    if dot_dir_flag and p.is_dir()  and str(p.name)[0] == ".": return True
+
+    # none of the checks were passed
+    return False
 
 
-def get_recurse_checker(recursive_flag, recursive_dot_flag):
+def recurse_checker(file_path, recursive_flag, recursive_dot_flag):
     """
-    :param recursive_flag: determines whether or not I should recursively refactor directories.
-    :param recursive_dot_flag: determines whether or not I should recursively refactor dot directories.
+    :param file_path: [Path] file to be checked.
+    :param recursive_flag: [bool] whether to recursively refactor directories.
+    :param recursive_dot_flag: [bool] whether to recursively refactor dot directories.
     :return: function, that determines whether or not a path should be recursed upon.
     """
 
-    # create
-    checks = []
-    if recursive_flag:     checks.append(lambda p: p.is_dir() and p.name[0] != '.')
-    if recursive_dot_flag: checks.append(lambda p: p.is_dir() and p.name[0] == '.')
-    return lambda direc: any([c(direc) for c in checks])
+    # alias
+    p = file_path
+
+    # if a flag is set, and file_path is associated with
+    # the flag, the file_path is scheduled to be recursed upon.
+    if recursive_flag     and p.is_dir() and p.name[0] != '.': return True
+    if recursive_dot_flag and p.is_dir() and p.name[0] == '.': return True
+
+    # None of the checks were passed
+    return False
 
 
 def print_verbose(dir_path, paths_to_refactor, refactored_paths):
     """
-    :param dir_path: Directory path whose contents will be refactored
-    :param paths_to_refactor: paths that will be refactored
-    :param refactored_paths: refactored paths
+    :param dir_path: [Path]Directory path whose contents will be refactored
+    :param paths_to_refactor: [list(Paths)] paths that will be refactored
+    :param refactored_paths: [list(Paths)] refactored paths
 
     :return: None
     """
 
     print(f"Directory: {dir_path}")
 
-    names = [p.name for p in paths_to_refactor]
-    refactored_names = [p.name for p in refactored_paths]
+    # Check: editor was closed properly
+    if refactored_paths is None:
 
-    max_len = max(len(p) for p in names)
+        print("No paths were refactored")
 
-    for n, rn in zip(names, refactored_names):
-        print(f"{n:>{max_len}} -> {rn}")
+    else:
+
+        # Get: file names from paths
+        names = [p.name for p in paths_to_refactor]
+        refactored_names = [p.name for p in refactored_paths]
+
+        # Get: maximum file name length
+        max_len = max(len(p) for p in names)
+
+        # Display: name -> refactored_name
+        for n, rn in zip(names, refactored_names):
+            print(f"{n:>{max_len}} -> {rn}")
 
     print()
 
@@ -88,44 +114,59 @@ def refactor(current_dir, paths_to_refactor):
     * refactors all of the provided paths.
     * checks that the refactored paths are valid.
         - prompts the user to try again or quit the program if the
-          paths were not refactored appropriately.
+          paths were not refactored appropriately, or the editor was
+          closed before saving.
 
     :param current_dir: [Path] to the current directory
     :param paths_to_refactor: [List(Path)] to refactor
 
     :return: list(Path) with refactored names.
+             - or None, if the editor was not closed properly
     """
 
     # GET: new file names
+    # - new_names_str will be equal to None, if the editor is closed
+    #   before saving the file.
     names_list = [f.name for f in paths_to_refactor]
     new_names_str = click.edit(f"Directory: {str(current_dir)}\n" +
                                "\n".join(names_list))
 
-    # CHECK: if editor was closed improperly
-    if new_names_str is None:
-        return
+    # CHECK: if editor was saved
+    if new_names_str is not None:
 
-    # GET: list of names to perform refactoring on.
-    # - ignores the first line in the file that contains
-    #   the directories name.
-    new_names_list = new_names_str.split("\n")[1:]
+        # GET: list of names to perform refactoring on.
+        # - ignores the first line in the file that contains
+        #   the directories name.
+        new_names_list = new_names_str.split("\n")[1:]
 
-    # GET: new paths
-    refactored_paths = [ptr.parent / nnl for ptr, nnl in
-                        zip(paths_to_refactor, new_names_list)]
+        # GET: new paths
+        refactored_paths = [ptr.parent / nnl for ptr, nnl in
+                                zip(paths_to_refactor, new_names_list)]
 
-    # CHECK: to see if the new paths are valid
-    valid = check_valid_paths(current_dir,
-                              paths_to_refactor,
-                              refactored_paths)
+        # CHECK: to see if the new paths are valid
+        valid = check_valid_paths(current_dir,
+                                  paths_to_refactor,
+                                  refactored_paths)
 
-    if not valid:
+    # Prompt user when:
+    # 1. Valid file names were not provided
+    # 2. The editor was not saved
+    if new_names_str is None or not valid:
 
-        # prompt to continue you or exit.
-        if click.confirm('Would you like try renaming files from this directory again?', abort=True):
-            refactor(current_dir, paths_to_refactor)
+        given = "default"
+        while given not in "rcx":
+            given = click.prompt("[Retry|Continue|Exit]? [r|c|x]")
+            print()
+
+        if given == "r":
+            return refactor(current_dir, paths_to_refactor)
+
+        elif given == "x":
+            click.echo(click.style(f'Aborted Refactoring: {current_dir}', fg='red'))
+            sys.exit(0)
+
         else:
-            click.confirm('Do you want to continue?', abort=True)
+            return
 
     return refactored_paths
 
@@ -134,11 +175,11 @@ def refactor_recursive(current_dir, refactor_check, recurse_check, verbose, dry_
     """
     recursively refactors files starting from the directory passed in.
 
-    :param current_dir: (Path) directory to refactor
-    :param refactor_check: (Func(Path) -> boolean) whether to refactor a path.
-    :param recurse_check:  (Func(Path) -> boolean) whether to recurse upon a path.
-    :param verbose: (bool) prints refactorings that take place.
-    :param dry_run: (bool) whether or not to perform refactorings.
+    :param current_dir: [Path] directory to refactor
+    :param refactor_check: [Func(Path] -> bool) whether to refactor a path.
+    :param recurse_check:  [Func(Path] -> bool) whether to recurse upon a path.
+    :param verbose: [bool] prints refactorings that take place.
+    :param dry_run: [bool] whether or not to perform refactorings.
     :return: None
     """
 
@@ -150,11 +191,11 @@ def refactor_recursive(current_dir, refactor_check, recurse_check, verbose, dry_
     #   was not saved, and nothing needs to be refactored in this directory.
     refactored_paths = refactor(current_dir, paths_to_refactor)
 
-    if refactored_paths is not None:
+    # print (original_file -> new_file)
+    if verbose or dry_run:
+        print_verbose(current_dir, paths_to_refactor, refactored_paths)
 
-        # print (original_file -> new_file)
-        if verbose or dry_run:
-            print_verbose(current_dir, paths_to_refactor, refactored_paths)
+    if refactored_paths is not None:
 
         # refactor paths
         if not dry_run:
@@ -171,9 +212,11 @@ def refactor_recursive(current_dir, refactor_check, recurse_check, verbose, dry_
 
 @click.command()
 @click.argument("path", default=".", required=False)
-@click.option("-f", "--files", "file_flag", default=True,  is_flag=True,
+@click.option("-f", "--files", "file_flag",
+              default=True,  is_flag=True,
               help="[Default = True]  refactor files.")
-@click.option("-dotf", "--dot-files", "dot_file_flag", default=False, is_flag=True,
+@click.option("-dotf", "--dot-files", "dot_file_flag",
+              default=False, is_flag=True,
               help="refactor dot files.")
 @click.option("-d", "--directories", "dir_flag",
               default=False, is_flag=True,
@@ -206,12 +249,12 @@ def cli(path, file_flag, dot_file_flag, dir_flag, dot_dir_flag, recursive_flag, 
     check_provided_path_valid(dir_path)
 
     # Function, that indicates whether or not a path should be refactored
-    refactor_check = get_refactor_checker(file_flag, dot_file_flag, dir_flag, dot_dir_flag)
+    refactor_check = lambda f: refactor_checker(f, file_flag, dot_file_flag, dir_flag, dot_dir_flag)
 
     # Function, that indicates whether or not a directory should be recursed upon.
-    recurse_check = get_recurse_checker(recursive_flag, recursive_dot_flag)
+    recurse_check = lambda f: recurse_checker(f, recursive_flag, recursive_dot_flag)
 
-    # reactor files recursively in dir_path
+    # refactor files recursively in dir_path
     refactor_recursive(dir_path, refactor_check, recurse_check, verbose, dry_run)
 
 

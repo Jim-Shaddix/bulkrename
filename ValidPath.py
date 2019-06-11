@@ -4,9 +4,6 @@ import tempfile
 This module is used to check that user input path names are valid.
 The function check_valid_paths performs all of the checks. The rest
 of the functions are helper functions that perform single checks.
-
-* more information on checking for proper paths:
-https://stackoverflow.com/questions/9532499/check-whether-a-path-is-valid-in-python-without-creating-a-file-at-the-paths-ta
 '''
 
 
@@ -36,8 +33,8 @@ def verify_no_duplicates(dir, paths, new_paths):
 def verify_valid_names(paths, new_paths):
     """
     Verify file names are valid.
-    - Create every file name in a temporary directory
-      and throws an error if a file name could not be created.
+     - Create every file name in a temporary directory
+       and throws an error if a file name could not be created.
     """
     temp_dir = tempfile.mkdtemp()
     path_temp_dir = Path(temp_dir)
@@ -62,10 +59,10 @@ def check_valid_paths(direc, paths, new_paths):
     This function is used to verify that new_paths contains valid file names that can
     be used to refactor the file names in paths.
 
-    :param direc: (Path) whose contents will be refacotred
-    :param paths: (list(Path)) paths in direc whose contents will be refactored
-    :param new_paths: list(Path) new path names that will be used to refactor contents of paths
-    :return:
+    :param direc: [Path] whose contents will be refactored
+    :param paths: [list(Path)] paths in direc whose contents will be refactored
+    :param new_paths: [list(Path)] new path names that will be used to refactor contents of paths
+    :return: [bool] indicates whether new_paths are valid
     """
 
     try:

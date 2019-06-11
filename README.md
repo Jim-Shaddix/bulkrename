@@ -54,6 +54,20 @@ Options:
   --help                  Show this message and exit.
 ```
 
-Below is a simple example of how the script works without any arguments.
+* When you modify a file or directory name in the spawned editor,
+  these changes will take place once you save the file and exit
+  the editor.
+* If the editor is exited without being saved, or improper file names were used in the editor,
+  the user is prompted with a message. The users response to the message dictates
+  how the rest of the program will run.
+  
+ ``` [Retry|Continue|Exit]? [r|c|x]: ```
+ 
+1. **r**: Allow's the user to try modifying the files in the current directory again.
+2. **c**: Causes the program to skip refactoring the current directory.
+3. **x**: will stop execution of the program.
+
+## Example Usage
+* Below is a simple example of how the script works without any arguments.
 
 ![example](bulkrename.gif)
