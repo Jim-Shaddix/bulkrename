@@ -2,7 +2,7 @@ import click
 import sys
 from pathlib import Path
 from ValidPath import check_valid_paths
-from typing import Iterable, List, NoReturn, Optional, Callable
+from typing import Iterable, List, NoReturn, Optional, Callable, Union
 """
     This is a program for refactoring filenames using a text editor (such as vim)
     - for a description on how to use this program, you can look in the docs in
@@ -17,6 +17,7 @@ def check_provided_path_valid(dir_path: Path) -> Optional[NoReturn]:
         appropriate path argument.
 
         :param dir_path: [Path] to check
+
         :return None
     """
     try:
@@ -39,11 +40,11 @@ def refactor_checker(file_path: Path, file_flag: bool, dot_file_flag: bool,
     """
     Determines whether or not a file should be refactored
 
-    :param file_path:     [Path] file to be checked.
-    :param file_flag:     [bool] whether to refactor files
-    :param dot_file_flag: [bool] whether to refactor dot files
-    :param dir_flag:      [bool] whether to refactor directories
-    :param dot_dir_flag:  [bool] whether to refactor dot directories
+    :param file_path:     file to be checked.
+    :param file_flag:     whether to refactor files
+    :param dot_file_flag: whether to refactor dot files
+    :param dir_flag:      whether to refactor directories
+    :param dot_dir_flag:  whether to refactor dot directories
 
     :return: [bool] indicates whether file_path should be refactored
     """
@@ -74,6 +75,7 @@ def recurse_checker(file_path: Path, recursive_flag: bool, recursive_dot_flag: b
     :param file_path: file to be checked.
     :param recursive_flag: whether to recursively refactor directories.
     :param recursive_dot_flag: whether to recursively refactor dot directories.
+
     :return: bool, that determines whether or not a path should be recursed upon.
     """
 
@@ -122,7 +124,7 @@ def print_verbose(dir_path: Path, paths_to_refactor: Iterable[Path],
     print()
 
 
-def refactor(current_dir: Path, paths_to_refactor: Iterable[Path]) -> List[Path]:
+def refactor(current_dir: Path, paths_to_refactor: Iterable[Path]) -> Union[List[Path], None, NoReturn]:
     """
     * refactors all of the provided paths.
     * checks that the refactored paths are valid.

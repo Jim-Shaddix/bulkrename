@@ -45,6 +45,10 @@ def verify_valid_names(new_paths: Iterable[Path]) -> Optional[NoReturn]:
     Verify file names are valid.
      - Create every file name in a temporary directory
        and throws an error if a file name could not be created.
+
+    :param new_paths: refactored path names
+
+    :return None: if the new path names are valid
     """
     temp_dir = tempfile.mkdtemp()
     path_temp_dir = Path(temp_dir)
@@ -72,6 +76,7 @@ def check_valid_paths(direc: Path, paths_to_refactor: Iterable[Path], new_paths:
     :param direc: directory whose contents will be refactored
     :param paths_to_refactor: paths in direc whose contents will be refactored
     :param new_paths: new path names that will be used to refactor contents of paths_to_refactor
+
     :return: indicates whether new_paths are valid
     """
 
