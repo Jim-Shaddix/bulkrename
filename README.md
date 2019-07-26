@@ -1,6 +1,6 @@
 # Bulkrename 
 * This script provides a command line tool 
-that can called through the command `bulkrename`.
+that is called through the command `bulkrename`.
 * This tool allows you to refactor files, similar 
 to how the `bulkrename` command works in the file 
 manager [ranger](https://github.com/ranger/ranger).
@@ -15,8 +15,7 @@ that is passed in.
 ## Requirements
 * python 3.6
 * python module: click
-* This script should run appropriately on MacOS/Linux/Windows systems, but
-the script has not been tested on Windows.
+* This script works on MacOS/Linux/Windows systems.
 
 If the click module is not already downloaded in your environment, 
 the installation command will download it for you. 
@@ -28,7 +27,7 @@ git clone https://github.com/Jim-Shaddix/bulkrename.git
 ```
 Install command:
 ```
-pip install --editable .
+pip3 install --editable .
 ```
 
 ## Usage
