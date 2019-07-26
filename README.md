@@ -70,3 +70,8 @@ Options:
 * Below is a simple example of how the script works without any arguments.
 
 ![example](bulkrename.gif)
+
+## Note
+This program launches an editor using the command click.edit().
+This command will use the systems defined editor, or fall back 
+on a sensible default. You can read more about this command [hear](https://click.palletsprojects.com/en/7.x/utils/#launching-editors). I recommend setting vim as your editor when using this command because vim comes with support for making bulk edits to text. However, if you do not wish to use vim, this program will work regardless.
